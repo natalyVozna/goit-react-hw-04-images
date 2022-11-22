@@ -12,8 +12,6 @@ export default class ApiServise {
 
     return axios.get(url).then(response => {
       this.page += 1;
-
-      //   console.log('response.data', response.data);
       return response.data;
     });
   }
