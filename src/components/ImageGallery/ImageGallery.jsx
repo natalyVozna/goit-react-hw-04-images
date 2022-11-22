@@ -65,6 +65,7 @@ export class ImageGallery extends Component {
         this.setState({ isLoading: false });
       }
     }
+    // Add scroll to last photo
     if (prevState.gallery.length !== gallery.length) {
       const element = document.getElementById('loadMore');
       if (element) {
@@ -87,7 +88,6 @@ export class ImageGallery extends Component {
     const { gallery, isLoading, totalImg } = this.state;
     const isShowBtn = gallery.length < totalImg;
 
-    console.log('showbtn', gallery.length, totalImg);
     return (
       <Container>
         <GalleryList id="loadMore">
