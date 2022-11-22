@@ -6,15 +6,17 @@ import { GalleryList, Container } from './ImageGallery.styled';
 import { Loader } from 'components/Loader/Loader';
 import { ImageGalleryItem } from 'components/ImageGalleryItem/ImageGalleryItem';
 import { Button } from 'components/Button/Button';
-// import ApiServise from './api-servise';
+import * as API from '../services/api';
+
 const BASE_URL = 'https://pixabay.com/api';
 
 export class ImageGallery extends Component {
   state = {
     gallery: [],
+    isLoading: false,
     page: 1,
     error: null,
-    status: 'idle',
+    totalImg: 0,
   };
 
   fetchPhotos = page => {
@@ -25,55 +27,52 @@ export class ImageGallery extends Component {
   };
 
   componentDidUpdate = async (prevProps, prevState) => {
-    const { page } = this.state;
-    if (prevProps.query !== this.props.query) {
-      this.setState({
-        status: 'pending',
-        gallery: [],
-      });
+    const { page, gallery } = this.state;
+    const { query } = this.props;
 
-      this.fetchPhotos(page);
-
+    if (prevProps.query !== query || prevState.page !== page) {
       try {
-        // const key = '30593721-3615c14b1fd526cc46c7cd9ff';
-        // const response = await axios.get(
-        //   `${BASE_URL}/?key=${key}&q=${this.props.query}&image_type=photo&orientation=horizontal&page=${page}&per_page=12`
-        // );
+        this.setState({ isLoading: true });
+        if (prevProps.query !== query) {
+          this.setState({ gallery: [] });
+        }
 
-        const response = await this.fetchPhotos(page);
+        const response = await API.searchPtotos(query, page);
 
-        if (response.data.hits.length === 0) {
+        if (response.hits.length === 0) {
           throw new Error(`Not found ${this.props.query}`);
         }
 
+        if (prevProps.query !== query) {
+          this.setState({
+            gallery: response.hits,
+            totalImg: response.total,
+          });
+          toast.success(`${response.total} photos were found for your request`);
+        } else {
+          this.setState(({ gallery }) => ({
+            gallery: [...gallery, ...response.hits],
+            totalImg: response.total,
+          }));
+        }
+      } catch (error) {
+        toast.error(error.message);
         this.setState({
-          status: 'resolve',
-          gallery: response.data.hits,
+          error,
+          isLoading: false,
         });
-      } catch (error) {
-        toast.error(error.message);
-        this.setState({ error, status: 'rejected' });
+      } finally {
+        this.setState({ isLoading: false });
       }
-    } else if (prevState.page !== this.state.page) {
-      try {
-        // const key = '30593721-3615c14b1fd526cc46c7cd9ff';
-        // const response = await axios.get(
-        //   `${BASE_URL}/?key=${key}&q=${this.props.query}&image_type=photo&orientation=horizontal&page=${page}&per_page=12`
-        // );
-
-        const response = await this.fetchPhotos(page);
-
-        if (response.data.hits.length === 0) {
-          throw new Error(`Not found ${this.props.query}`);
-        }
-
-        this.setState(({ gallery, status }) => ({
-          status: 'resolve',
-          gallery: [...gallery, ...response.data.hits],
-        }));
-      } catch (error) {
-        toast.error(error.message);
-        this.setState({ error, status: 'rejected' });
+    }
+    if (prevState.gallery.length !== gallery.length) {
+      const element = document.getElementById('loadMore');
+      if (element) {
+        window.scrollTo({
+          top: element.getBoundingClientRect().height + 100,
+          left: 100,
+          behavior: 'smooth',
+        });
       }
     }
   };
@@ -85,37 +84,13 @@ export class ImageGallery extends Component {
   };
 
   render() {
-    const { gallery, status } = this.state;
-    const renderContent = () => {
-      if (status === 'pending') {
-        return <Loader />;
-      }
+    const { gallery, isLoading, totalImg } = this.state;
+    const isShowBtn = gallery.length < totalImg;
 
-      if (status === 'resolve') {
-        return (
-          <>
-            <GalleryList>
-              {gallery.length > 0 &&
-                gallery.map(({ largeImageURL, webformatURL, id, tags }) => (
-                  <ImageGalleryItem
-                    key={id}
-                    tags={tags}
-                    largeImageURL={largeImageURL}
-                    webformatURL={webformatURL}
-                  />
-                ))}
-            </GalleryList>
-            <Button onClickHandle={this.onLoadMore}>Load More</Button>
-          </>
-        );
-      }
-    };
-
-    console.log('galler', gallery);
+    console.log('showbtn', gallery.length, totalImg);
     return (
       <Container>
-        {renderContent()}
-        {/* <GalleryList>
+        <GalleryList id="loadMore">
           {gallery.length > 0 &&
             gallery.map(({ largeImageURL, webformatURL, id, tags }) => (
               <ImageGalleryItem
@@ -125,11 +100,11 @@ export class ImageGallery extends Component {
                 webformatURL={webformatURL}
               />
             ))}
-        </GalleryList> */}
-        {/* {isLoading && <Loader />}
-        {!isLoading && gallery.length > 0 && (
-          
-        )} */}
+        </GalleryList>
+        {isLoading && <Loader />}
+        {!isLoading && isShowBtn && (
+          <Button onClickHandle={this.onLoadMore}>Load More</Button>
+        )}
       </Container>
     );
   }
