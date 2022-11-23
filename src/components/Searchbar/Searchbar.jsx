@@ -1,6 +1,6 @@
 import { Component } from 'react';
 import { toast } from 'react-toastify';
-
+import PropTypes from 'prop-types';
 import {
   SearchForm,
   SearchInput,
@@ -54,3 +54,7 @@ export class Searchbar extends Component {
     );
   }
 }
+
+Searchbar.propTypes = {
+  onSubmit: PropTypes.func.isRequired,
+};
