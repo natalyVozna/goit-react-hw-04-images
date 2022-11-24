@@ -71,8 +71,6 @@ export class App extends Component {
     } catch (error) {
       this.setState({ status: Status.Error });
     }
-
-    // }
   };
 
   render() {
