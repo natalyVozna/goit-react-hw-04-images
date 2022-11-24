@@ -11,31 +11,34 @@ import {
 // import { ReactComponent as SearchIcon } from '../../assets/icons/search.svg';
 
 export class Searchbar extends Component {
-  state = {
-    query: '',
-  };
+  //   state = {
+  //     query: '',
+  //   };
 
-  handleChange = e => {
-    this.setState({ query: e.target.value.toLowerCase() });
-  };
+  //   handleChange = e => {
+  //     this.props.onChangeSearch(e.target.value.toLowerCase());
+  //     // this.setState({ query: e.target.value.toLowerCase() });
+  //   };
 
-  handleSubmit = e => {
-    e.preventDefault();
+  //   handleSubmit = e => {
+  //     e.preventDefault();
 
-    if (this.state.query.trim() === '') {
-      toast.error('Enter photo title');
+  //     console.log('handleSubmi');
+  //     if (this.state.query.trim() === '') {
+  //       toast.error('Enter photo title');
 
-      return;
-    }
-    this.props.onSubmit(this.state.query);
-    this.setState({ query: '' });
-  };
+  //       return;
+  //     }
+  //     this.props.onSubmitSearch(this.state.query);
+  //     // this.setState({ query: '' });
+  //   };
 
   render() {
-    const { query } = this.state;
+    // const { query } = this.state;
+    const { search, onChangeSearch, onSubmitSearch } = this.props;
     return (
       <Container>
-        <SearchForm onSubmit={this.handleSubmit}>
+        {/* <SearchForm onSubmit={this.handleSubmit}>
           <SearchButton type="submit">
             <SearchLabel />
           </SearchButton>
@@ -49,6 +52,21 @@ export class Searchbar extends Component {
             placeholder="Search images and photos"
             onChange={this.handleChange}
           />
+        </SearchForm> */}
+        <SearchForm onSubmit={onSubmitSearch}>
+          <SearchButton type="submit">
+            <SearchLabel />
+          </SearchButton>
+
+          <SearchInput
+            type="text"
+            name="query"
+            value={search}
+            autocomplete="off"
+            autoFocus
+            placeholder="Search images and photos"
+            onChange={onChangeSearch}
+          />
         </SearchForm>
       </Container>
     );
@@ -56,5 +74,5 @@ export class Searchbar extends Component {
 }
 
 Searchbar.propTypes = {
-  onSubmit: PropTypes.func.isRequired,
+  //   onSubmit: PropTypes.func.isRequired,
 };
