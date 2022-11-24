@@ -1,12 +1,9 @@
-import { Component } from 'react';
 import PropTypes from 'prop-types';
-// import { toast } from 'react-toastify';
 import { Status } from 'constants/fetch-status';
 import { GalleryList, Container } from './ImageGallery.styled';
 import { Loader } from 'components/Loader/Loader';
 import { ImageGalleryItem } from 'components/ImageGalleryItem/ImageGalleryItem';
 import { Button } from 'components/Button/Button';
-// import * as API from '../../services/api';
 
 export const ImageGallery = ({ status, gallery, onLoadMore, totalImg }) => {
   const isShowBtn = gallery.length < totalImg;
