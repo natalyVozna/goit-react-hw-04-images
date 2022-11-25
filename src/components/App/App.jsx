@@ -32,7 +32,6 @@ export const App = () => {
     try {
       setPage(1);
       const resPhotos = await API.getPtotos(params);
-      console.log('resPhotos1', resPhotos);
       if (resPhotos.hits.length === 0) {
         toast.error('Nothing found for your request');
         throw new Error('Nothing found for your request');
@@ -65,7 +64,6 @@ export const App = () => {
       setGallery(prev => [...prev, ...resPhotos.hits]);
       setStatus(Status.Success);
     } catch (error) {
-      console.log('error', error);
       setStatus(Status.Error);
       toast.error(error);
     }
