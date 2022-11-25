@@ -13,10 +13,10 @@ export const Modal = ({ onClose, children }) => {
   };
 
   useEffect(() => {
-    window.addEventListener('keydown', handleKeyDown);
+    window.addEventListener('keydown', e => handleKeyDown(e));
 
     return () => {
-      window.removeEventListener('keydown', handleKeyDown);
+      window.removeEventListener('keydown', e => handleKeyDown(e));
     };
   }, [e.code]);
 
