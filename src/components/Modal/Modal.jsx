@@ -6,12 +6,6 @@ import { Backdrop, Content } from './Modal.styled';
 const modalRoot = document.querySelector('#modal-root');
 
 export const Modal = ({ onClose, children }) => {
-  // const handleKeyDown = e => {
-  //   if (e.code === 'Escape') {
-  //     onClose();
-  //   }
-  // };
-
   useEffect(() => {
     const handleKeyDown = e => {
       if (e.code === 'Escape') {
@@ -39,37 +33,6 @@ export const Modal = ({ onClose, children }) => {
     modalRoot
   );
 };
-
-// export class Modal extends Component {
-//   componentDidMount = () => {
-//     window.addEventListener('keydown', this.handleKeyDown);
-//   };
-//   componentWillUnmount = () => {
-//     window.removeEventListener('keydown', this.handleKeyDown);
-//   };
-
-//   handleKeyDown = e => {
-//     if (e.code === 'Escape') {
-//       this.props.onClose();
-//     }
-//   };
-
-//   handleBackdropClick = e => {
-//     if (e.target === e.currentTarget) {
-//       this.props.onClose();
-//     }
-//   };
-
-//   render() {
-//     const { children } = this.props;
-//     return createPortal(
-//       <Backdrop onClick={this.handleBackdropClick}>
-//         <Content>{children}</Content>
-//       </Backdrop>,
-//       modalRoot
-//     );
-//   }
-// }
 
 Modal.propTypes = {
   onClose: PropTypes.func.isRequired,
