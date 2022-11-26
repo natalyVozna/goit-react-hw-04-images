@@ -31,15 +31,19 @@ export const App = () => {
     if (!search) {
       return;
     }
-    fetchPhotos({ q: search, page });
-  }, [search]);
-
-  useEffect(() => {
     if (page === 1) {
-      return;
+      fetchPhotos({ q: search, page, loadMore: false });
+    } else {
+      fetchPhotos({ q: search, page, loadMore: true });
     }
-    fetchPhotos({ q: search, page, loadMore: true });
-  }, [page]);
+  }, [search, page]);
+
+  // useEffect(() => {
+  //   if (page === 1) {
+  //     return;
+  //   }
+  //   fetchPhotos({ q: search, page, loadMore: true });
+  // }, [page, search]);
 
   const fetchPhotos = async params => {
     const { loadMore, q, page } = params;
