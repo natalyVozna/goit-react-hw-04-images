@@ -1,4 +1,4 @@
-import { useState, useEffect } from 'react';
+import { useState, useEffect, lazy } from 'react';
 import { toast, ToastContainer } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 import { Container } from './App.styled';
@@ -12,6 +12,7 @@ export const App = () => {
   const [status, setStatus] = useState(Status.Idle);
   const [search, setSearch] = useState('');
   const [page, setPage] = useState(1);
+  const [loadMore, setLoadMore] = useState(false);
   const [totalImg, setTotalImg] = useState(0);
 
   useEffect(() => {
@@ -31,22 +32,11 @@ export const App = () => {
     if (!search) {
       return;
     }
-    if (page === 1) {
-      fetchPhotos({ q: search, page, loadMore: false });
-    } else {
-      fetchPhotos({ q: search, page, loadMore: true });
-    }
+    fetchPhotos({ q: search, page });
   }, [search, page]);
 
-  // useEffect(() => {
-  //   if (page === 1) {
-  //     return;
-  //   }
-  //   fetchPhotos({ q: search, page, loadMore: true });
-  // }, [page, search]);
-
   const fetchPhotos = async params => {
-    const { loadMore, q, page } = params;
+    const { q, page } = params;
 
     setStatus(Status.Loading);
     try {
@@ -55,8 +45,7 @@ export const App = () => {
         resPhotos = await API.getPtotos({ q, page });
         setGallery(prev => [...prev, ...resPhotos.hits]);
       } else {
-        setPage(1);
-        resPhotos = await API.getPtotos({ q });
+        resPhotos = await API.getPtotos({ q, page: 1 });
         setGallery(resPhotos.hits);
         setTotalImg(resPhotos.totalHits);
         toast.success(`${resPhotos.totalHits} images found for your request`);
@@ -74,11 +63,14 @@ export const App = () => {
   };
 
   const handleSubmit = search => {
+    setLoadMore(false);
+    setPage(1);
     setSearch(search);
   };
 
   const handleLoadMore = async () => {
     setStatus(Status.Loading);
+    setLoadMore(true);
     setPage(prev => prev + 1);
   };
 
