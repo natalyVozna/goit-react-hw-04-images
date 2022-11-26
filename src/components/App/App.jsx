@@ -28,39 +28,6 @@ export const App = () => {
     }
   }, [gallery]);
 
-  // const fetchPhotos = async params => {
-  //   const { q, page } = params;
-
-  //   setStatus(Status.Loading);
-  //   try {
-  //     let resPhotos = null;
-  //     if (loadMore) {
-  //       resPhotos = await API.getPtotos({ q, page });
-  //       setGallery(prev => [...prev, ...resPhotos.hits]);
-  //     } else {
-  //       resPhotos = await API.getPtotos({ q, page: 1 });
-  //       setGallery(resPhotos.hits);
-  //       setTotalImg(resPhotos.totalHits);
-  //       toast.success(`${resPhotos.totalHits} images found for your request`);
-  //     }
-
-  //     if (resPhotos.hits.length === 0) {
-  //       toast.error('Nothing found for your request');
-  //       throw new Error('Nothing found for your request');
-  //     }
-  //     setStatus(Status.Success);
-  //   } catch (error) {
-  //     setStatus(Status.Error);
-  //     toast.error(error);
-  //   }
-  // };
-
-  // useEffect(() => {
-  //   if (!search) {
-  //     return;
-  //   }
-  //   fetchPhotos({ q: search, page });
-  // }, [search, page, loadMore]);
   useEffect(() => {
     if (!search) {
       return;
