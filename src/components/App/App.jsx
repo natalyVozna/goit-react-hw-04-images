@@ -27,59 +27,66 @@ export const App = () => {
     }
   }, [gallery]);
 
+  useEffect(() => {
+    if (!search) {
+      return;
+    }
+    fetchPhotos({ q: search, page });
+  }, [search]);
+
+  useEffect(() => {
+    if (page === 1) {
+      return;
+    }
+    fetchPhotos({ q: search, page, loadMore: true });
+  }, [page]);
+
   const fetchPhotos = async params => {
+    const { loadMore, q, page } = params;
+
     setStatus(Status.Loading);
     try {
-      setPage(1);
-      const resPhotos = await API.getPtotos(params);
+      let resPhotos = null;
+      if (loadMore) {
+        resPhotos = await API.getPtotos({ q, page });
+        setGallery(prev => [...prev, ...resPhotos.hits]);
+      } else {
+        setPage(1);
+        resPhotos = await API.getPtotos({ q });
+        setGallery(resPhotos.hits);
+        setTotalImg(resPhotos.totalHits);
+        toast.success(`${resPhotos.totalHits} images found for your request`);
+      }
+
       if (resPhotos.hits.length === 0) {
         toast.error('Nothing found for your request');
         throw new Error('Nothing found for your request');
       }
       setStatus(Status.Success);
-      setGallery(resPhotos.hits);
-      setTotalImg(resPhotos.totalHits);
-      toast.success(`${resPhotos.totalHits} images found for your request`);
     } catch (error) {
       setStatus(Status.Error);
       toast.error(error);
     }
   };
 
-  const handleChange = event => {
-    setSearch(event.target.value);
-  };
-
-  const handleSubmit = e => {
-    e.preventDefault();
-    fetchPhotos({ q: search });
+  const handleSubmit = search => {
+    setSearch(search);
   };
 
   const handleLoadMore = async () => {
     setStatus(Status.Loading);
-
-    try {
-      setPage(prev => prev + 1);
-      const resPhotos = await API.getPtotos({ page: page + 1, q: search }); // content of page 2
-      setGallery(prev => [...prev, ...resPhotos.hits]);
-      setStatus(Status.Success);
-    } catch (error) {
-      setStatus(Status.Error);
-      toast.error(error);
-    }
+    setPage(prev => prev + 1);
   };
 
   return (
     <>
       <Container>
-        <Searchbar
-          search={search}
-          onChangeSearch={handleChange}
-          onSubmitSearch={handleSubmit}
-        />
+        <Searchbar onSubmitSearch={handleSubmit} />
         <ImageGallery
           onLoadMore={handleLoadMore}
           search={search}
+          setPage={setPage}
+          page={page}
           gallery={gallery}
           totalImg={totalImg}
           status={status}

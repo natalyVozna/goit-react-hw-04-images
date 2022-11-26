@@ -5,7 +5,14 @@ import { Loader } from 'components/Loader/Loader';
 import { ImageGalleryItem } from 'components/ImageGalleryItem/ImageGalleryItem';
 import { Button } from 'components/Button/Button';
 
-export const ImageGallery = ({ status, gallery, onLoadMore, totalImg }) => {
+export const ImageGallery = ({
+  status,
+  gallery,
+  onLoadMore,
+  totalImg,
+  setPage,
+  page,
+}) => {
   const isShowBtn = gallery.length < totalImg;
 
   return (
