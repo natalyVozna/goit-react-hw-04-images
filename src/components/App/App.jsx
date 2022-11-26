@@ -1,4 +1,4 @@
-import { useState, useEffect, lazy } from 'react';
+import { useState, useEffect } from 'react';
 import { toast, ToastContainer } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 import { Container } from './App.styled';
@@ -28,13 +28,6 @@ export const App = () => {
     }
   }, [gallery]);
 
-  useEffect(() => {
-    if (!search) {
-      return;
-    }
-    fetchPhotos({ q: search, page });
-  }, [search, page]);
-
   const fetchPhotos = async params => {
     const { q, page } = params;
 
@@ -61,6 +54,13 @@ export const App = () => {
       toast.error(error);
     }
   };
+
+  useEffect(() => {
+    if (!search) {
+      return;
+    }
+    fetchPhotos({ q: search, page });
+  }, [search, page, loadMore]);
 
   const handleSubmit = search => {
     setLoadMore(false);
