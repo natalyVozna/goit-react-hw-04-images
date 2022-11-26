@@ -60,7 +60,7 @@ export const App = () => {
       return;
     }
     fetchPhotos({ q: search, page });
-  }, [search, page, loadMore]);
+  }, [search, page, fetchPhotos]);
 
   const handleSubmit = search => {
     setLoadMore(false);
