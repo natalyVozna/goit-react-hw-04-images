@@ -1,4 +1,4 @@
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useRef } from 'react';
 import { toast, ToastContainer } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 import { Container } from './App.styled';
@@ -14,13 +14,13 @@ export const App = () => {
   const [page, setPage] = useState(1);
   const [loadMore, setLoadMore] = useState(false);
   const [totalImg, setTotalImg] = useState(0);
+  const galleryRef = useRef();
 
   useEffect(() => {
     if (gallery.length > 0) {
-      const element = document.getElementById('loadMore');
-      if (element) {
+      if (galleryRef.current) {
         window.scrollTo({
-          top: element.getBoundingClientRect().height + 100,
+          top: galleryRef.current.getBoundingClientRect().height + 100,
           left: 100,
           behavior: 'smooth',
         });
@@ -86,6 +86,7 @@ export const App = () => {
           gallery={gallery}
           totalImg={totalImg}
           status={status}
+          ref={galleryRef}
         />
       </Container>
       <ToastContainer autoClose={3000} />
